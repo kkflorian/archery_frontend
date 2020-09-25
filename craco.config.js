@@ -9,6 +9,11 @@ module.exports = {
                     lessRule.exclude = /node_modules/;
                     return lessRule;
                 },
+                lessLoaderOptions: {
+                    lessOptions: {
+                        javascriptEnabled: true,
+                    },
+                },
                 cssLoaderOptions: {
                     modules: {
                         localIdentName: "[local]_[hash:base64:5]"
