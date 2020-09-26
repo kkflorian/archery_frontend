@@ -4,8 +4,18 @@ module.exports = {
         {
             plugin: CracoLessPlugin,
             options: {
+                lessLoaderOptions: {
+                    lessOptions: {
+                        javascriptEnabled: true,
+                    },
+                },
+            }
+        },
+        {
+            plugin: CracoLessPlugin,
+            options: {
                 modifyLessRule: function(lessRule, _context) {
-                    lessRule.test = /(\.(module))?\.(less)$/;
+                    lessRule.test = /\.(module)\.(less)$/;
                     lessRule.exclude = /node_modules/;
                     return lessRule;
                 },
