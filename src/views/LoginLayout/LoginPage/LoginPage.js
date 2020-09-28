@@ -37,7 +37,7 @@ const LoginForm = () => {
         name="password"
         label="Passwort"
         rules={[defaultRules.requiredNoWhitespace]}>
-        <Input placeholder="Passwort" size="large" autoComplete="current-password"/>
+        <Input.Password placeholder="Passwort" size="large" autoComplete="current-password"/>
       </Form.Item>
 
       <FormError message=""/>
