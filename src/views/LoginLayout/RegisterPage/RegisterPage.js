@@ -3,6 +3,7 @@ import {Button, Col, Form, Input, Row, Typography} from "antd";
 import cls from "./RegisterPage.module.less";
 import React from "react";
 import {defaultRules} from "../../../shared/misc";
+import {useHistory} from "react-router-dom";
 
 export default () => {
     return LoginLayout.wrap(
@@ -19,6 +20,7 @@ export default () => {
 };
 
 const RegisterForm = () => {
+    const history = useHistory();
     return (
         <Form name="register" layout="vertical">
             <Form.Item
@@ -56,6 +58,10 @@ const RegisterForm = () => {
             <Form.Item>
                 <Button type="primary" size="large" htmlType="submit" className={cls.submitButton}>
                     Registrieren
+                </Button>
+                <Button type="default" size="large" className={cls.loginButton}
+                        onClick={() => history.push("./login")}>
+                    Zurück zum Login
                 </Button>
             </Form.Item>
         </Form>
