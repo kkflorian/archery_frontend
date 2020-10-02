@@ -13,7 +13,7 @@ function App() {
         <TitledRoute title="Anmeldung" path="/login" component={LoginPage}/>
         <TitledRoute title="Registrierung" path="/register" component={RegisterPage}/>
 
-        <AuthenticatedArea/>
+        <Route path="/a" component={AuthenticatedArea} />
 
         <Redirect to="/a" />
       </Switch>
@@ -22,11 +22,19 @@ function App() {
 }
 
 function AuthenticatedArea() {
-    return (
+  const loggedIn = true; // TODO Use user state
+  return (
+    <Switch>
+      {loggedIn ? (
         <>
-            <TitledRoute title="Home" path="/home" component={HomePage} />
+          <TitledRoute title="Home" path="/a/home" component={HomePage}/>
+          <Redirect to="/a/home"/>
         </>
-    )
+      ) : (
+        <Redirect to="/login"/>
+      )}
+    </Switch>
+  )
 }
 
 export default App;
