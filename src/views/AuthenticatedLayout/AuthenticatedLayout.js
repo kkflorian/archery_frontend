@@ -3,13 +3,13 @@ import cls from './AuthenticatedLayout.module.less';
 import {Typography, Avatar, Menu, Row, Col, Layout, Dropdown, Button, Divider, } from "antd";
 import {useHistory} from "react-router-dom";
 
-export default ({children, back, title}) => {
+export default ({children, back, title, contentClass}) => {
   return (
     <Layout className={cls.layout}>
       <Layout.Header className={cls.layoutHeader}>
         <HeaderRow back={back} title={title} />
       </Layout.Header>
-      <Layout.Content>
+      <Layout.Content className={contentClass}>
         {children}
       </Layout.Content>
     </Layout>
@@ -19,7 +19,7 @@ export default ({children, back, title}) => {
 function HeaderRow({title, back}) {
   const history = useHistory();
   const menu = (
-    <Menu>
+    <Menu >
       <Menu.Item key="0">Meine Statistik</Menu.Item>
       <Menu.Item key="1" danger>Abmelden</Menu.Item>
     </Menu>
