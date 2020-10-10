@@ -6,7 +6,7 @@ export const api = new ApiClient({
     if (status === "error") {
       return {
         hasError: true,
-        errorMessage: errorCode + (message && ": " + message),
+        errorMessage: message ?? `Error - ${errorCode}`,
       }
     }
 
