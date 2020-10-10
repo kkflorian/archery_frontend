@@ -1,6 +1,6 @@
 import React from 'react';
 import cls from './AuthenticatedLayout.module.less';
-import {Typography, Avatar, Menu, Row, Col, Layout, Dropdown, Button, Divider, } from "antd";
+import {Typography, Avatar, Menu, Row, Col, Layout, Dropdown, Button } from "antd";
 import {useHistory} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
