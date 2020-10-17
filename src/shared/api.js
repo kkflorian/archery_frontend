@@ -6,6 +6,7 @@ export const api = new ApiClient({
     if (status === "error") {
       return {
         hasError: true,
+        errorCode,
         errorMessage: message ?? `Error - ${errorCode}`,
       }
     }
@@ -17,6 +18,7 @@ export const api = new ApiClient({
   errorHandler: error => {
     return {
       hasError: true,
+      errorCode: "REQUEST_FAILED",
       errorMessage: `${error.name}: ${error.message}`
     }
   },
