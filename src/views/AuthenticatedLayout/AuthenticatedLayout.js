@@ -1,9 +1,10 @@
 import React from 'react';
 import cls from './AuthenticatedLayout.module.less';
-import {Typography, Avatar, Menu, Row, Col, Layout, Dropdown, Button } from "antd";
+import {Spin, Typography, Avatar, Menu, Row, Col, Layout, Dropdown, Button } from "antd";
 import {useHistory} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
+import {api} from "../../shared/api";
 
 export default ({children, back, title, contentClass}) => {
   return (
@@ -20,11 +21,17 @@ export default ({children, back, title, contentClass}) => {
 
 function HeaderRow({title, back}) {
   const history = useHistory();
+  const {handle, loading} = api.useRequestState()
+
   const menu = (
-    <Menu >
-      <Menu.Item key="0">Meine Statistik</Menu.Item>
-      <Menu.Item key="1" danger>Abmelden</Menu.Item>
-    </Menu>
+    <Spin spinning={loading}>
+      <Menu>
+        <Menu.Item key="0">Meine Statistik</Menu.Item>
+        <Menu.Item key="1" danger onClick={() => {
+          api.post("/users/signoff", {}, handle).then(() => history.push("../login"))
+        }}>Abmelden</Menu.Item>
+      </Menu>
+    </Spin>
   );
 
   //TODO add username in avatar
