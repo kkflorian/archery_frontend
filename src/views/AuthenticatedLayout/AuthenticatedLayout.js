@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import cls from './AuthenticatedLayout.module.less';
 import {Spin, Typography, Avatar, Menu, Row, Col, Layout, Dropdown, Button } from "antd";
 import {useHistory} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import {api} from "../../shared/api";
+import {UserContext} from "../../shared/context";
+import UserAvatar from "./shared/UserAvatar/UserAvatar";
 
 export default ({children, back, title, contentClass}) => {
   return (
@@ -20,6 +22,7 @@ export default ({children, back, title, contentClass}) => {
 }
 
 function HeaderRow({title, back}) {
+  const {result} = useContext(UserContext);
   const history = useHistory();
   const {handle, loading} = api.useRequestState()
 
@@ -34,7 +37,6 @@ function HeaderRow({title, back}) {
     </Spin>
   );
 
-  //TODO add username in avatar
   return (
     <Row>
       <Col span={6}>
@@ -54,7 +56,7 @@ function HeaderRow({title, back}) {
       <Col span={6} className={cls.headerColUser}>
         {back == null && (
           <Dropdown overlay={menu} trigger={['click']} placement="bottomRight" >
-            <Avatar size="large">U</Avatar>
+            <UserAvatar size="large" username={result.data.username}/>
           </Dropdown>
         )}
       </Col>
