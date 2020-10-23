@@ -2,6 +2,7 @@
   "name": "archery-frontend",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "dependencies": {
     "@craco/craco": "^5.6.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
