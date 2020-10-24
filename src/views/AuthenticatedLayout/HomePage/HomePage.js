@@ -1,11 +1,15 @@
 import React from 'react';
 import cls from './HomePage.module.less';
 import AuthenticatedLayout from "../AuthenticatedLayout";
-import {Avatar, List} from 'antd';
+import {Avatar, Button, List, Tooltip} from 'antd';
 import {api} from "../../../shared/api";
 import UserAvatar from "../shared/UserAvatar/UserAvatar";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
+import {useHistory} from "react-router-dom";
 
 export default () => {
+  const history = useHistory();
   const [result] = api.useGet("/events")
 
   return (
@@ -15,6 +19,14 @@ export default () => {
         dataSource={result?.data?.["eventInfos"]}
         renderItem={item => (<EventListItem item={item} />)}
       />
+
+      <div className={cls.eventButtonWrapper}>
+        <Tooltip title="Event erstellen" placement="left" >
+          <Button type="primary" size="large" shape="circle"
+                  icon={<FontAwesomeIcon icon={faPlus}/>} className={cls.eventButton}
+                  onClick={() => history.push("./create-event")} />
+        </Tooltip>
+      </div>
     </AuthenticatedLayout>
   )
 }
