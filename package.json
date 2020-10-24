@@ -10,6 +10,7 @@
     "@fortawesome/react-fontawesome": "^0.1.11",
     "antd": "^4.6.5",
     "craco-less": "^1.17.0",
+    "haversine-distance": "^1.2.1",
     "react": "^16.13.1",
     "react-api-client": "^1.1.1",
     "react-dom": "^16.13.1",

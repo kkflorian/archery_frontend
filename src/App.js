@@ -5,6 +5,7 @@ import TitledRoute from "./shared/TitledRoute";
 import LoginPage from "./views/LoginLayout/LoginPage/LoginPage";
 import RegisterPage from "./views/LoginLayout/RegisterPage/RegisterPage";
 import HomePage from "./views/AuthenticatedLayout/HomePage/HomePage";
+import CreateEventPage from "./views/AuthenticatedLayout/CreateEventPage/CreateEventPage";
 import {api} from "./shared/api";
 import {UserContext} from "./shared/context";
 
@@ -27,7 +28,8 @@ function AuthenticatedArea() {
   return (
     <api.Loader endpoint="/users/session" consumer={UserContext} createError={() => <Redirect to="/login" />}>
       <Switch>
-        <TitledRoute title="Home" path="/a/home" component={HomePage}/>
+        <TitledRoute title="Home" path="/a/home" component={HomePage} />
+        <TitledRoute title="Event erstellen" path="/a/create-event" component={CreateEventPage} />
         <Redirect to="/a/home"/>
       </Switch>
     </api.Loader>
