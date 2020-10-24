@@ -31,7 +31,7 @@ function HeaderRow({title, back}) {
       <Menu>
         <Menu.Item key="0">Meine Statistik</Menu.Item>
         <Menu.Item key="1" danger onClick={() => {
-          api.post("/users/signoff", {}, handle).then(() => history.push("../login"))
+          api.delete("/users/session", {}, handle).then(() => history.push("../login"))
         }}>Abmelden</Menu.Item>
       </Menu>
     </Spin>

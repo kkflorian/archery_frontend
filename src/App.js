@@ -25,7 +25,7 @@ function App() {
 
 function AuthenticatedArea() {
   return (
-    <api.Loader endpoint="/users" consumer={UserContext} createError={() => <Redirect to="/login" />}>
+    <api.Loader endpoint="/users/session" consumer={UserContext} createError={() => <Redirect to="/login" />}>
       <Switch>
         <TitledRoute title="Home" path="/a/home" component={HomePage}/>
         <Redirect to="/a/home"/>

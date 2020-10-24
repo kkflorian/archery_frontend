@@ -32,7 +32,7 @@ const LoginForm = () => {
 
   return (
     <Spin spinning={loading}>
-      <Form name="login" layout="vertical" onFinish={formData => api.post("/users/login", formData, handle).then(onResponse)}>
+      <Form name="login" layout="vertical" onFinish={formData => api.put("/users/session", formData, handle).then(onResponse)}>
         <Form.Item
           className={cls.formItem}
           name="username"
