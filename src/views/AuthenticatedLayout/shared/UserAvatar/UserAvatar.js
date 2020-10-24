@@ -13,7 +13,7 @@ export default function ({username, fullName, ...rest}) {
     .reduce((total, current) => ((total << 5) - total) + current, 0));
 
   const avatar = (
-    <Avatar {...rest} className={colorClasses[usernameSum % colorClasses.length]}>
+    <Avatar {...rest} className={`${cls.avatar} ${colorClasses[usernameSum % colorClasses.length]}`}>
       {usernameChar}
     </Avatar>
   );
