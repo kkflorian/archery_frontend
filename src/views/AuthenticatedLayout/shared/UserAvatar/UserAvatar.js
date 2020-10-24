@@ -19,7 +19,7 @@ export default function ({username, fullName, ...rest}) {
   );
 
   return fullName != null ? (
-    <Tooltip title={fullName} placement="bottom">
+    <Tooltip title={fullName} placement="bottom" trigger="click">
       {avatar}
     </Tooltip>
   ) : avatar;

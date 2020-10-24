@@ -10,11 +10,12 @@ import {useHistory} from "react-router-dom";
 
 export default () => {
   const history = useHistory();
-  const [result] = api.useGet("/events")
+  const [result, loading] = api.useGet("/events")
 
   return (
     <AuthenticatedLayout title="Archery" contentClass={cls.content}>
       <List
+        loading={loading}
         itemLayout="horizontal"
         dataSource={result?.data?.["eventInfos"]}
         renderItem={item => (<EventListItem item={item} />)}
