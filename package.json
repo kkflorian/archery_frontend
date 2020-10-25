@@ -12,10 +12,11 @@
     "craco-less": "^1.17.0",
     "haversine-distance": "^1.2.1",
     "react": "^16.13.1",
-    "react-api-client": "^1.1.1",
+    "react-api-client": "^1.2.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.3"
+    "react-scripts": "3.4.3",
+    "use-array-state": "^1.0.2"
   },
   "scripts": {
     "start": "craco start",

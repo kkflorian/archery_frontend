@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import cls from './CreateEventPage.module.less';
 import AuthenticatedLayout from "../AuthenticatedLayout";
 import {Select, Button, Divider, Form, Tooltip, message} from "antd";
@@ -7,10 +7,74 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import haversine from 'haversine-distance'
 import {getGeoLocation} from "../../../shared/misc";
+import useArrayState from 'use-array-state'
 
-function ParkourFormItem() {
-  const [value, setValue] = useState();
+export default function () {
+  const [values, valuesAction] = useArrayState([null])
+  const [form] = Form.useForm();
 
+  return (
+    <AuthenticatedLayout title="Event erstellen" back={"./home"}>
+      <Form form={form}>
+        <Divider plain orientation="left">Parkour</Divider>
+        <Form.Item className={cls.formItem}>
+          <ParkourSelect form={form}/>
+        </Form.Item>
+
+        <Divider plain orientation="left">Zählweise</Divider>
+        <Divider plain orientation="left">Teilnehmer</Divider>
+        {values.map((value, index) => <MemberFormItem key={index} value={value}
+                                                      index={index} valuesState={[values, valuesAction]}/>)}
+
+        <Button type="primary" size="large" className={cls.createButton}>Event erstellen</Button>
+      </Form>
+    </AuthenticatedLayout>
+  );
+}
+
+function MemberFormItem({value, index, valuesState: [values, valuesAction]}) {
+  const {handle, loading, result, resetHandle} = api.useRequestState(false);
+
+  function handleChange(newValue) {
+    valuesAction.update(index, newValue);
+    if (value == null && values.length < 10) { // Add new select
+      valuesAction.push(null);
+    }
+  }
+
+  function handleSearch(searchTerm) {
+    if (searchTerm.length === 0) {
+      resetHandle();
+      return;
+    }
+
+    api.post("/users", {
+      searchTerm, limit: 5
+    }, handle).finally();
+  }
+
+  const options = result?.data["userList"]
+    // Do not show an already selected user in a different select item
+    .filter(userInfo => value === userInfo.username || !values.includes(userInfo.username))
+    .map(userInfo => ({
+      label: `${userInfo.firstName} ${userInfo.lastName} (${userInfo.username})`,
+      value: userInfo.username
+    }))
+
+  return (
+    <Form.Item name={`member-${index}`} className={cls.formItem}>
+      <Select size="large" placeholder="Teilnehmer hinzufügen" showArrow={false}
+              showSearch onSearch={handleSearch} notFoundContent={result == null ? null : "Keine Teilnehmer gefunden"}
+              filterOption={false} defaultActiveFirstOption={false}
+              onChange={handleChange}
+              options={options} loading={loading}
+      >
+      </Select>
+    </Form.Item>
+  );
+}
+
+function ParkourSelect({form}) {
   const [parkoursResult, parkoursLoading] = api.useGet("/parkours")
   const parkourData = parkoursResult?.data["parkours"].map(parkour => ({
     label: `${parkour["name"]} (${parkour["street"]}, ${parkour["zip"]}, ${parkour["city"]})`,
@@ -35,7 +99,7 @@ function ParkourFormItem() {
         return;
       }
 
-      setValue(distances[0].entry.value)
+      form.setFieldsValue({"parkour": distances[0].entry.value});
     }).catch(e => {
       message.error("Position konnte nicht ermittelt werden")
       console.error(e);
@@ -44,39 +108,19 @@ function ParkourFormItem() {
 
   return (
     <>
-      <Select size="large" placeholder="Parkour auswählen" showSearch className={cls.parkourSelect}
-              loading={parkoursLoading} options={parkourData}
-              value={value} onChange={newValue => {
-                console.log("new value", newValue)
-                setValue(newValue)
-      }}
-              filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
-              optionFilterProp="children"
-      />
+      <Form.Item name="parkour" noStyle>
+        <Select size="large" placeholder="Parkour auswählen" showSearch className={cls.parkourSelect}
+                loading={parkoursLoading} options={parkourData}
+                filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
+                optionFilterProp="children"
+        />
+      </Form.Item>
+
       <Tooltip title="Automatisch erkennen">
         <Button shape="circle" type="text" size="large" onClick={autoSearchParkour}>
           <FontAwesomeIcon icon={faMapMarkerAlt}/>
         </Button>
       </Tooltip>
     </>
-  );
-}
-
-export default function () {
-  return (
-    <AuthenticatedLayout title="Event erstellen" back={"./home"}>
-      <Form>
-        <Divider plain orientation="left">Parkour</Divider>
-        <Form.Item name="parkour" className={cls.formItem}>
-          <ParkourFormItem/>
-        </Form.Item>
-
-        <Divider plain orientation="left">Zählweise</Divider>
-
-        <Divider plain orientation="left">Teilnehmer</Divider>
-
-        <Button type="primary" size="large" className={cls.createButton}>Event erstellen</Button>
-      </Form>
-    </AuthenticatedLayout>
   );
 }
