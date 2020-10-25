@@ -18,7 +18,7 @@ export default () => {
         loading={loading}
         itemLayout="horizontal"
         dataSource={result?.data?.["eventInfos"]}
-        renderItem={item => (<EventListItem item={item} />)}
+        renderItem={(item, index) => (<EventListItem key={index} item={item}/>)}
       />
 
       <div className={cls.eventButtonWrapper}>
@@ -56,14 +56,14 @@ function EventListItem({item}) {
     <>{item["gamemode"]} - Tier {item["animalCount"]} von {item["totalAnimals"]}</>
   )
 
-  const getUserAvatar = info => (<UserAvatar username={info[0]} fullName={`${info[1]} ${info[2]}`} />);
+  const getUserAvatar = (info, index) => (<UserAvatar key={index} username={info[0]} fullName={`${info[1]} ${info[2]}`} />);
 
   return (
     <List.Item className={cls.item}>
       <List.Item.Meta title={title} description={description}/>
       <Avatar.Group maxCount={2} maxPopoverPlacement="bottom">
-        {getUserAvatar(item["creator"])}
-        {item["member"].map(memberInfo => getUserAvatar(memberInfo))}
+        {getUserAvatar(item["creator"], 0)}
+        {item["member"].map((memberInfo, index) => getUserAvatar(memberInfo, index + 1))}
       </Avatar.Group>
     </List.Item>
   )
