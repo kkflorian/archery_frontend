@@ -4,7 +4,7 @@ import AuthenticatedLayout from "../AuthenticatedLayout";
 import {Select, Button, Divider, Form, Tooltip, message} from "antd";
 import {api} from "../../../shared/api";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
+import {faMapMarkerAlt, faPlus} from "@fortawesome/free-solid-svg-icons";
 import haversine from 'haversine-distance'
 import {getGeoLocation} from "../../../shared/misc";
 import useArrayState from 'use-array-state'
@@ -22,6 +22,8 @@ export default function () {
         </Form.Item>
 
         <Divider plain orientation="left">Zählweise</Divider>
+        <GamemodeFormItem/>
+
         <Divider plain orientation="left">Teilnehmer</Divider>
         {values.map((value, index) => <MemberFormItem key={index} value={value}
                                                       index={index} valuesState={[values, valuesAction]}/>)}
@@ -74,9 +76,25 @@ function MemberFormItem({value, index, valuesState: [values, valuesAction]}) {
   );
 }
 
+function GamemodeFormItem() {
+  const [result, loading] = api.useGet("/gamemodes");
+  const options = result?.data["gamemodes"].map(gamemode => ({
+    label: gamemode["gamemode"],
+    value: gamemode["id"]
+  }))
+
+  return (
+    <Form.Item name="gamemode" className={cls.formItem} >
+      <Select size="large" placeholder="Zählweise auswählen"
+              loading={loading} options={options}
+      />
+    </Form.Item>
+  )
+}
+
 function ParkourSelect({form}) {
-  const [parkoursResult, parkoursLoading] = api.useGet("/parkours")
-  const parkourData = parkoursResult?.data["parkours"].map(parkour => ({
+  const [result, loading] = api.useGet("/parkours")
+  const options = result?.data["parkours"].map(parkour => ({
     label: `${parkour["name"]} (${parkour["street"]}, ${parkour["zip"]}, ${parkour["city"]})`,
     value: parkour["id"],
     position: {
@@ -87,7 +105,7 @@ function ParkourSelect({form}) {
 
   async function autoSearchParkour() {
     getGeoLocation({maximumAge: 300_000, timeout: 2500}).then(location => {
-      const distances = parkourData
+      const distances = options
         .filter(entry => entry.position.lat !== 0 && entry.position.lon !== 0)
         .map(entry => ({entry, distance: haversine(entry.position, location.coords)}))
         .filter(distanceEntry => distanceEntry.distance < 1000)
@@ -110,7 +128,7 @@ function ParkourSelect({form}) {
     <>
       <Form.Item name="parkour" noStyle>
         <Select size="large" placeholder="Parkour auswählen" showSearch className={cls.parkourSelect}
-                loading={parkoursLoading} options={parkourData}
+                loading={loading} options={options}
                 filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
                 optionFilterProp="children"
         />
@@ -119,6 +137,11 @@ function ParkourSelect({form}) {
       <Tooltip title="Automatisch erkennen">
         <Button shape="circle" type="text" size="large" onClick={autoSearchParkour}>
           <FontAwesomeIcon icon={faMapMarkerAlt}/>
+        </Button>
+      </Tooltip>
+      <Tooltip title="Neuen Parkour hinzufügen">
+        <Button shape="circle" type="text" size="large">
+          <FontAwesomeIcon icon={faPlus}/>
         </Button>
       </Tooltip>
     </>
