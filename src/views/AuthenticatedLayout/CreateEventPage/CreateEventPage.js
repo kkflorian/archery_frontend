@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import cls from './CreateEventPage.module.less';
 import AuthenticatedLayout from "../AuthenticatedLayout";
 import {Select, Button, Divider, Form, Tooltip, message} from "antd";
@@ -6,8 +6,9 @@ import {api} from "../../../shared/api";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMapMarkerAlt, faPlus} from "@fortawesome/free-solid-svg-icons";
 import haversine from 'haversine-distance'
-import {getGeoLocation} from "../../../shared/misc";
+import {getGeoLocation, getSelectTextSearch} from "../../../shared/misc";
 import useArrayState from 'use-array-state'
+import CreateParkourModal from "./CreateParkourModal";
 
 export default function () {
   const [values, valuesAction] = useArrayState([null])
@@ -93,6 +94,8 @@ function GamemodeFormItem() {
 }
 
 function ParkourSelect({form}) {
+  const [createVisible, setCreateVisible] = useState(false);
+
   const [result, loading] = api.useGet("/parkours")
   const options = result?.data["parkours"].map(parkour => ({
     label: `${parkour["name"]} (${parkour["street"]}, ${parkour["zip"]}, ${parkour["city"]})`,
@@ -126,11 +129,12 @@ function ParkourSelect({form}) {
 
   return (
     <>
+      <CreateParkourModal state={[createVisible, setCreateVisible]}/>
+
       <Form.Item name="parkour" noStyle>
-        <Select size="large" placeholder="Parkour auswählen" showSearch className={cls.parkourSelect}
+        <Select size="large" placeholder="Parkour auswählen" className={cls.parkourSelect}
                 loading={loading} options={options}
-                filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
-                optionFilterProp="children"
+                {...getSelectTextSearch()}
         />
       </Form.Item>
 
@@ -140,7 +144,7 @@ function ParkourSelect({form}) {
         </Button>
       </Tooltip>
       <Tooltip title="Neuen Parkour hinzufügen">
-        <Button shape="circle" type="text" size="large">
+        <Button shape="circle" type="text" size="large" onClick={() => setCreateVisible(true)}>
           <FontAwesomeIcon icon={faPlus}/>
         </Button>
       </Tooltip>
