@@ -78,8 +78,8 @@ function MemberFormItem({value, index, valuesState: [values, valuesAction]}) {
 
 function GamemodeFormItem() {
   const [result, loading] = api.useGet("/gamemodes");
-  const options = result?.data["gamemodes"].map(gamemode => ({
-    label: gamemode["gamemode"],
+  const options = result?.data["gameModes"].map(gamemode => ({
+    label: gamemode["gameMode"],
     value: gamemode["id"]
   }))
 
