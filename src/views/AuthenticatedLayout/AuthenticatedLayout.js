@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import cls from './AuthenticatedLayout.module.less';
-import {Spin, Typography, Avatar, Menu, Row, Col, Layout, Dropdown, Button } from "antd";
+import {Spin, Typography, Menu, Row, Col, Layout, Dropdown, Button } from "antd";
 import {useHistory} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
@@ -31,7 +31,7 @@ function HeaderRow({title, back}) {
       <Menu>
         <Menu.Item key="0">Meine Statistik</Menu.Item>
         <Menu.Item key="1" danger onClick={() => {
-          api.post("/users/signoff", {}, handle).then(() => history.push("../login"))
+          api.delete("/users/session", {}, handle).then(() => history.push("../login"))
         }}>Abmelden</Menu.Item>
       </Menu>
     </Spin>
