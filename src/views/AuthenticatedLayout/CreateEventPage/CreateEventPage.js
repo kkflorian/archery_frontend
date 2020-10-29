@@ -1,22 +1,31 @@
 import React, {useState} from "react";
 import cls from './CreateEventPage.module.less';
 import AuthenticatedLayout from "../AuthenticatedLayout";
-import {Select, Button, Divider, Form, Tooltip, message} from "antd";
+import {Space, Select, Button, Divider, Form, Tooltip, message} from "antd";
 import {api} from "../../../shared/api";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMapMarkerAlt, faPlus} from "@fortawesome/free-solid-svg-icons";
 import haversine from 'haversine-distance'
-import {getGeoLocation, getSelectTextSearch} from "../../../shared/misc";
+import {defaultRules, getGeoLocation, getSelectTextSearch, mapKeysToArray} from "../../../shared/misc";
 import useArrayState from 'use-array-state'
 import CreateParkourModal from "./CreateParkourModal";
+import {FormError} from "../../../shared/FormError/FormError";
+import BlankSpace from "../../../shared/BlankSpace";
 
 export default function () {
+  const {result, handle} = api.useRequestState();
   const [values, valuesAction] = useArrayState([null])
   const [form] = Form.useForm();
 
+  function onSubmit(fields) {
+    mapKeysToArray(fields, "eventMember");
+    fields["eventMember"] = fields["eventMember"].filter(em => em != null);
+    api.put("/events", fields, handle).finally();
+  }
+
   return (
-    <AuthenticatedLayout title="Event erstellen" back={"./home"}>
-      <Form form={form}>
+    <AuthenticatedLayout title="Event erstellen" back="./home">
+      <Form form={form} onFinish={onSubmit}>
         <Divider plain orientation="left">Parkour</Divider>
         <Form.Item className={cls.formItem}>
           <ParkourSelect form={form}/>
@@ -28,8 +37,13 @@ export default function () {
         <Divider plain orientation="left">Teilnehmer</Divider>
         {values.map((value, index) => <MemberFormItem key={index} value={value}
                                                       index={index} valuesState={[values, valuesAction]}/>)}
+        <BlankSpace height={8} />
 
-        <Button type="primary" size="large" className={cls.createButton}>Event erstellen</Button>
+        <FormError marginStart={8} message={result?.errorMessage}/>
+        
+        <Form.Item className={cls.formItem}>
+          <Button size="large" type="primary" htmlType="submit" className={cls.createButton}>Event erstellen</Button>
+        </Form.Item>
       </Form>
     </AuthenticatedLayout>
   );
@@ -65,13 +79,12 @@ function MemberFormItem({value, index, valuesState: [values, valuesAction]}) {
     }))
 
   return (
-    <Form.Item name={`member-${index}`} className={cls.formItem}>
+    <Form.Item name={`eventMember-${index}`} className={`${cls.formItem} ${cls.memberFormItem}`}
+               rules={index === 0 && [defaultRules.required]}>
       <Select size="large" placeholder="Teilnehmer hinzufügen" showArrow={false}
-              showSearch onSearch={handleSearch} notFoundContent={result == null ? null : "Keine Teilnehmer gefunden"}
-              filterOption={false} defaultActiveFirstOption={false}
-              onChange={handleChange}
-              options={options} loading={loading}
-      >
+              showSearch onSearch={handleSearch} notFoundContent={result != null && "Keine Teilnehmer gefunden"}
+              filterOption={false} onChange={handleChange}
+              options={options} loading={loading}>
       </Select>
     </Form.Item>
   );
@@ -79,16 +92,15 @@ function MemberFormItem({value, index, valuesState: [values, valuesAction]}) {
 
 function GamemodeFormItem() {
   const [result, loading] = api.useGet("/gamemodes");
-  const options = result?.data["gameModes"].map(gamemode => ({
-    label: gamemode["gameMode"],
-    value: gamemode["id"]
+  const options = result?.data["gameModes"].map(gameMode => ({
+    label: gameMode["gameMode"],
+    value: gameMode["id"]
   }))
 
   return (
-    <Form.Item name="gamemode" className={cls.formItem} >
+    <Form.Item name="gameModeId" className={cls.formItem} rules={[defaultRules.required]} >
       <Select size="large" placeholder="Zählweise auswählen"
-              loading={loading} options={options}
-      />
+              loading={loading} options={options} />
     </Form.Item>
   )
 }
@@ -131,7 +143,7 @@ function ParkourSelect({form}) {
     <>
       <CreateParkourModal reloadParkours={reload} state={[createVisible, setCreateVisible]}/>
 
-      <Form.Item name="parkour" noStyle>
+      <Form.Item name="parkourId" rules={[defaultRules.required]} noStyle>
         <Select size="large" placeholder="Parkour auswählen" className={cls.parkourSelect}
                 loading={loading} options={options}
                 {...getSelectTextSearch()}

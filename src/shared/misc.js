@@ -18,3 +18,19 @@ export function getSelectTextSearch() {
     optionFilterProp: "children"
   }
 }
+
+export function mapKeysToArray(object, prefix) {
+  const result = [];
+
+  for (let i = 0; true; i++) {
+    const key = `${prefix}-${i}`;
+    if (!object.hasOwnProperty(key)) break;
+
+    const value = object[key];
+    delete object[key];
+
+    result.push(value);
+  }
+
+  object[prefix] = result;
+}
