@@ -96,7 +96,7 @@ function GamemodeFormItem() {
 function ParkourSelect({form}) {
   const [createVisible, setCreateVisible] = useState(false);
 
-  const [result, loading] = api.useGet("/parkours")
+  const [result, loading, reload] = api.useGet("/parkours")
   const options = result?.data["parkours"].map(parkour => ({
     label: `${parkour["name"]} (${parkour["street"]}, ${parkour["zip"]}, ${parkour["city"]})`,
     value: parkour["id"],
@@ -129,7 +129,7 @@ function ParkourSelect({form}) {
 
   return (
     <>
-      <CreateParkourModal state={[createVisible, setCreateVisible]}/>
+      <CreateParkourModal reloadParkours={reload} state={[createVisible, setCreateVisible]}/>
 
       <Form.Item name="parkour" noStyle>
         <Select size="large" placeholder="Parkour auswählen" className={cls.parkourSelect}

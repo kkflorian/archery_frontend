@@ -1,16 +1,40 @@
-import React from "react";
+import React, {useState} from "react";
 import {Form, Input, InputNumber, Modal, Select} from "antd";
 import {defaultRules, getSelectTextSearch} from "../../../shared/misc";
 import countries from '../../../shared/countries';
 import cls from './CreateParkourModal.module.less'
+import {api} from "../../../shared/api";
+import {FormError} from "../../../shared/FormError/FormError";
 
-export default function({state: [visible, setVisible]}) {
+export default function({reloadParkours, state: [visible, setVisible]}) {
+  const [errorMessage, setErrorMessage] = useState(null);
   const [form] = Form.useForm();
+
+  async function handleOkay() {
+    setErrorMessage("");
+    form.validateFields()
+      .then(fields => api.put("/parkours", fields))
+      .then(result => {
+        if (result.hasError) {
+          setErrorMessage(result.errorMessage);
+          return;
+        }
+
+        setVisible(false);
+        reloadParkours();
+      }).catch()
+  }
+
+  function destroy() {
+    form.resetFields();
+    setErrorMessage(null);
+  }
+
   return (
     <Modal title="Parkour hinzufügen"
-           okText="Parkour erstellen" okButtonProps={{size: "large"}}
+           okText="Parkour erstellen" okButtonProps={{size: "large"}} onOk={handleOkay}
            cancelText="Abbrechen" cancelButtonProps={{size: "large"}}
-           afterClose={() => form.resetFields()} onCancel={() => setVisible(false)}
+           afterClose={destroy} onCancel={() => setVisible(false)}
            visible={visible} closable={false} destroyOnClose>
       <Form name="createParkour" layout="vertical" form={form} autoComplete="off">
         <Form.Item name="name" label="Name des Parkours" rules={[ defaultRules.requiredNoWhitespace ]}>
@@ -38,6 +62,8 @@ export default function({state: [visible, setVisible]}) {
         <Form.Item name="countryCode" label="Land" rules={[defaultRules.required]}>
           <Select size="large" placeholder="Land" options={countries.asOptions} {...getSelectTextSearch()}/>
         </Form.Item>
+
+        <FormError message={errorMessage}/>
       </Form>
     </Modal>
   );
