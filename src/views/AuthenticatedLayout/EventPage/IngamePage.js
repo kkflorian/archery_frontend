@@ -14,7 +14,7 @@ export default function ({setTitle, event, reload}) {
   });
   const currentAnimal = lastFromArray(currentShooter["shots"], {animalNumber: 0})["animalNumber"] + 1;
 
-  const [error, setError] = useState();
+  const {result: putResult, loading: putLoading, handle: putHandle} = api.useRequestState();
 
   // todo add parkourname
   // todo add animal count
@@ -24,17 +24,13 @@ export default function ({setTitle, event, reload}) {
   }, [currentAnimal, setTitle])
 
   async function onContinue(shots, resetShots) {
-    setError(null);
     const result = await api.put("/events/" + event["eventId"] + "/shots", {
       animalNumber: currentAnimal,
       username: currentShooter.username,
       shots: shots.map((points, index) => ({points, shotNumber: index + 1}))
-    });
+    }, putHandle);
 
-    if (result.hasError) {
-      setError(result.errorMessage);
-      return;
-    }
+    if (result.hasError) return;
 
     resetShots();
     reload();
@@ -45,9 +41,9 @@ export default function ({setTitle, event, reload}) {
       <TitledValue title="Aktueller Schütze" value={currentShooter.username}/>
       <Divider plain type="horizontal"/>
 
-      <GamemodeComponent onContinue={onContinue}/>
+      <GamemodeComponent onContinue={onContinue} loading={putLoading} />
 
-      <FormError message={error}/>
+      <FormError message={putResult?.errorMessage}/>
     </div>
   );
 }
@@ -62,7 +58,7 @@ const createPointsOptions = (points) => ([
 ]);
 
 /* Two arrow gamemode */
-function TwoArrowGamemode({onContinue}) {
+function TwoArrowGamemode({onContinue, loading}) {
   const pointTables = [
     createPointsOptions([11, 10, 8, 5]),
     createPointsOptions([11, 10, 8, 5])
@@ -86,14 +82,14 @@ function TwoArrowGamemode({onContinue}) {
       {(shotValues.length === 2) && (
         <ContinueButton onClick={() => {
           onContinue(shotValues, () => $shotValues.set([]));
-        }}/>
+        }} loading={loading}/>
       )}
     </>
   )
 }
 
 /* Three arrow gamemode */
-function ThreeArrowGamemode({onContinue}) {
+function ThreeArrowGamemode({onContinue, loading}) {
   const pointTables = [
     createPointsOptions([20, 18, 16]),
     createPointsOptions([14, 12, 10]),
@@ -120,7 +116,7 @@ function ThreeArrowGamemode({onContinue}) {
       {(shotValues.some(value => value > 0) || shotValues.length === 3) && (
         <ContinueButton onClick={() => {
           onContinue(shotValues, () => $shotValues.set([]));
-        }}/>
+        }} loading={loading}/>
       )}
     </>
   )

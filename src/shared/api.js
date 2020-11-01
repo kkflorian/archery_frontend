@@ -24,7 +24,7 @@ export const api = new ApiClient({
       errorMessage: `${error.name}: ${error.message}`
     }
   },
-  loaderCreateLoading: () => (<Spin />),
+  loaderCreateLoading: () => (<Spin style={{width: "100%", marginTop: 16}} />),
   fetchOptions: {
     credentials: (process.env.NODE_ENV === "development" ? 'include' : undefined)
   }
