@@ -1,12 +1,13 @@
 import cls from './IngamePage.module.less';
-import {lastFromArray, mapKeysToArray, setWindowTitle} from "../../../shared/misc";
+import {lastFromArray, setWindowTitle} from "../../../shared/misc";
 import React, {useEffect, useState} from "react";
 import {api} from "../../../shared/api";
-import {Avatar, Button, Col, Divider, Form, Radio, Row, Typography} from "antd";
+import {Avatar, Button, Col, Divider, Radio, Row} from "antd";
 import {FormError} from "../../../shared/FormError/FormError";
 import useArrayState from "use-array-state";
+import TitledValue from "../shared/TitledValue/TitledValue";
 
-export default function({setTitle, event, reload}) {
+export default function ({setTitle, event, reload}) {
   const GamemodeComponent = gamemodeComponents[String(event["gameModeId"])];
   const currentShooter = event.members.reduce((previous, current) => { // Find first user with least shots
     return (previous == null || current["shots"].length < previous["shots"].length) ? current : previous;
@@ -20,7 +21,7 @@ export default function({setTitle, event, reload}) {
   useEffect(() => {
     setTitle(`PARKOURNAME (${currentAnimal}/TOTAL)`);
     setWindowTitle("PARKOURNAME - Ingame")
-  }, [currentAnimal])
+  }, [currentAnimal, setTitle])
 
   async function onContinue(shots, resetShots) {
     setError(null);
@@ -41,12 +42,12 @@ export default function({setTitle, event, reload}) {
 
   return (
     <div className={cls.content}>
-      <Typography.Title className={cls.usernameHeader} level={5}>Aktueller Schütze</Typography.Title>
-      <Typography.Title className={cls.username} level={2}>{currentShooter.username}</Typography.Title>
+      <TitledValue title="Aktueller Schütze" value={currentShooter.username}/>
       <Divider plain type="horizontal"/>
 
       <GamemodeComponent onContinue={onContinue}/>
-      <FormError message={error} />
+
+      <FormError message={error}/>
     </div>
   );
 }
@@ -59,6 +60,7 @@ const createPointsOptions = (points) => ([
   ...points.map(p => ({label: String(p), value: p})),
   {label: "MISS", value: 0},
 ]);
+
 /* Two arrow gamemode */
 function TwoArrowGamemode({onContinue}) {
   const pointTables = [
@@ -67,28 +69,26 @@ function TwoArrowGamemode({onContinue}) {
   ];
 
   const [shotValues, $shotValues] = useArrayState([])
-  const [form] = Form.useForm();
 
   const groups = pointTables
     .map((pointTable, index) => (
-      <Form.Item key={index} name={`points-${index}`}>
+      <NumberedRow key={index} number={index + 1}>
         <Radio.Group options={pointTable} optionType="button" size="large" buttonStyle="solid"
+                     value={shotValues[index]}
                      onChange={ev => $shotValues.update(index, ev.target.value)}/>
-      </Form.Item>
+      </NumberedRow>
     ));
 
   return (
-    <Form form={form} onFinish={fields => {
-      mapKeysToArray(fields, "points");
-      onContinue(fields["points"], () => {
-        $shotValues.set([]);
-        form.resetFields();
-      });
-    }}>
+    <>
       {groups}
 
-      {(shotValues.length === 2) && (<ContinueButtonItem />)}
-    </Form>
+      {(shotValues.length === 2) && (
+        <ContinueButton onClick={() => {
+          onContinue(shotValues, () => $shotValues.set([]));
+        }}/>
+      )}
+    </>
   )
 }
 
@@ -99,38 +99,30 @@ function ThreeArrowGamemode({onContinue}) {
     createPointsOptions([14, 12, 10]),
     createPointsOptions([8, 6, 4])
   ];
-
   const [shotValues, $shotValues] = useArrayState([])
-  const [form] = Form.useForm();
 
   const groups = pointTables
     .filter((v, index) => index === 0 || shotValues[index - 1] === 0)
     .map((pointTable, index) => (
-      <Form.Item key={index} name={`points-${index}`} style={{"width": "100%"}}>
-        <NumberedRow number={index + 1}>
-          <Radio.Group options={pointTable} optionType="button" size="large" buttonStyle="solid"
-                       onChange={ev => {
-                         $shotValues.update(index, ev.target.value);
-                         for (let i = shotValues.length - 1; i >= index + 1; i--) {
-                           form.resetFields([`points-${i}`]);
-                           $shotValues.remove(i);
-                         }
-                       }}/>
-        </NumberedRow>
-      </Form.Item>
+      <NumberedRow key={index} number={index + 1}>
+        <Radio.Group options={pointTable} optionType="button" size="large" buttonStyle="solid"
+                     value={shotValues[index]}
+                     onChange={ev => {
+                       $shotValues.update(index, ev.target.value);
+                       $shotValues.splice(index + 1, 3)
+                     }}/>
+      </NumberedRow>
     ));
   return (
-    <Form form={form} onFinish={fields => {
-      mapKeysToArray(fields, "points");
-      onContinue(fields["points"], () => {
-        $shotValues.set([]);
-        form.resetFields();
-      });
-    }}>
+    <>
       {groups}
 
-      {(shotValues.some(value => value > 0) || shotValues.length === 3) && (<ContinueButtonItem />)}
-    </Form>
+      {(shotValues.some(value => value > 0) || shotValues.length === 3) && (
+        <ContinueButton onClick={() => {
+          onContinue(shotValues, () => $shotValues.set([]));
+        }}/>
+      )}
+    </>
   )
 }
 
@@ -147,12 +139,10 @@ function NumberedRow({number, children, colClassName}) {
   )
 }
 
-function ContinueButtonItem() {
+function ContinueButton({...rest}) {
   return (
-    <Form.Item>
-      <Button size="large" type="primary" htmlType="submit" className={cls.continueButton}>
-        Nächster Spieler
-      </Button>
-    </Form.Item>
+    <Button size="large" type="primary" htmlType="submit" className={cls.continueButton} {...rest}>
+      Nächster Spieler
+    </Button>
   )
 }
