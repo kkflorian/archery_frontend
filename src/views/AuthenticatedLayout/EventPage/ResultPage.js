@@ -4,8 +4,9 @@ import {Col, Divider, Row, Table, Typography} from "antd";
 import cls from "./ResultPage.module.less";
 import {showInModal} from "../../../shared/modal";
 import TitledValue from "../shared/TitledValue/TitledValue";
-import {setWindowTitle} from "../../../shared/misc";
+import {possessive, setWindowTitle} from "../../../shared/misc";
 import roundTo from 'round-to';
+import BlankSpace from "../../../shared/BlankSpace";
 
 export default function ({event, setTitle}) {
   const {result: {data: {username}}} = useContext(UserContext);
@@ -21,7 +22,7 @@ export default function ({event, setTitle}) {
     },
     {
       username: "user2",
-      firstName: "Vorname2",
+      firstName: "Vorname2s",
       lastName: "Nachname2",
       totalPoints: 200,
       averagePoints: 17.5,
@@ -51,11 +52,14 @@ export default function ({event, setTitle}) {
 
       <Divider plain/>
       <Row justify={"center"}>
-        <Col span={18}>
-          <Typography.Title level={2} className={"center"}>Scoreboard</Typography.Title>
+        <Col span={22}>
+          <Typography.Title level={4} className={"center"}>Scoreboard</Typography.Title>
+          <BlankSpace height={16}/>
           <Scoreboard statsList={statsList} ownUsername={username} />
         </Col>
       </Row>
+
+      <BlankSpace height={64}/>
     </>
   )
 }
@@ -81,7 +85,8 @@ function Scoreboard({statsList, ownUsername}) {
            rowKey={record => record.stats.username}
            onRow={record => ({
              onClick: () => {
-               const title = record.stats.username === ownUsername ? "Deine Stats" : `${record.name}'s Stats`;
+               const title = record.stats.username === ownUsername ? "Deine Statistik"
+                 : `${possessive(record.stats.firstName)} Statistik`;
                showInModal(<StatsDisplay title={title} stats={record.stats}/>, {
                  footer: null,
                  closable: false
@@ -109,7 +114,7 @@ function StatsDisplay({title, stats}) {
           <TitledValue title="Genauigkeit" value={`${Math.round(stats.accuracy * 100)}%`} valueLevel={1}/>
         </Col>
         <Col span={12}>
-          <TitledValue title="Anzahl von Schüssen" value={stats.shotsTotal} valueLevel={1}/>
+          <TitledValue title="Schüsse" value={stats.shotsTotal} valueLevel={1}/>
         </Col>
       </Row>
     </>

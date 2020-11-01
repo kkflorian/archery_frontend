@@ -40,3 +40,7 @@ export function lastFromArray(array, fallback = null) {
 export function setWindowTitle(title) {
   document.title = `${title} | Archery`;
 }
+
+export function possessive(name) {
+  return `${name}${name.endsWith("s") ? "'" : "'s"}`;
+}
