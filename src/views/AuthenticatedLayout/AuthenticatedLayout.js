@@ -14,7 +14,7 @@ export default ({children, back, title, contentClass}) => {
       <Layout.Header className={cls.layoutHeader}>
         <HeaderRow back={back} title={title} />
       </Layout.Header>
-      <Layout.Content className={contentClass}>
+      <Layout.Content className={`${cls.content} ${contentClass}`}>
         {children}
       </Layout.Content>
     </Layout>
