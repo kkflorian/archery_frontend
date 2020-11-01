@@ -64,8 +64,8 @@ const createPointsOptions = (points) => ([
 /* Two arrow gamemode */
 function TwoArrowGamemode({onContinue}) {
   const pointTables = [
-    createPointsOptions([40, 30, 20, 10]),
-    createPointsOptions([40, 30, 20, 10])
+    createPointsOptions([11, 10, 8, 5]),
+    createPointsOptions([11, 10, 8, 5])
   ];
 
   const [shotValues, $shotValues] = useArrayState([])
