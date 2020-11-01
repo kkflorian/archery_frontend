@@ -30,3 +30,10 @@ export const api = new ApiClient({
   }
 })
 
+export function withApiLoader(endpoint, callback) {
+  return (
+    <api.Loader consumer={true} endpoint={endpoint}>
+      {callback}
+    </api.Loader>
+  )
+}
