@@ -12,15 +12,19 @@ import CreateParkourModal from "./CreateParkourModal";
 import {FormError} from "../../../shared/FormError/FormError";
 import BlankSpace from "../../../shared/BlankSpace";
 
-export default function () {
-  const {result, handle} = api.useRequestState();
+export default function ({history}) {
+  const {result, handle, loading} = api.useRequestState();
   const [values, valuesAction] = useArrayState([null])
   const [form] = Form.useForm();
 
   function onSubmit(fields) {
     mapKeysToArray(fields, "eventMember");
     fields["eventMember"] = fields["eventMember"].filter(em => em != null);
-    api.put("/events", fields, handle).finally();
+    api.put("/events", fields, handle).then(result => {
+      if (!result.hasError) {
+        history.push(`./event/${result.data.eventId}`)
+      }
+    })
   }
 
   return (
@@ -42,7 +46,7 @@ export default function () {
         <FormError marginStart={8} message={result?.errorMessage}/>
         
         <Form.Item className={cls.formItem}>
-          <Button size="large" type="primary" htmlType="submit" className={cls.createButton}>Event erstellen</Button>
+          <Button size="large" type="primary" htmlType="submit" className={cls.createButton} loading={loading}>Event erstellen</Button>
         </Form.Item>
       </Form>
     </AuthenticatedLayout>
