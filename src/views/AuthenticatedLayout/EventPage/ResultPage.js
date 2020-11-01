@@ -5,6 +5,7 @@ import cls from "./ResultPage.module.less";
 import {showInModal} from "../../../shared/modal";
 import TitledValue from "../shared/TitledValue/TitledValue";
 import {setWindowTitle} from "../../../shared/misc";
+import roundTo from 'round-to';
 
 export default function ({event, setTitle}) {
   const {result: {data: {username}}} = useContext(UserContext);
@@ -100,7 +101,7 @@ function StatsDisplay({title, stats}) {
           <TitledValue title="Gesamtpunkte" value={stats.totalPoints} valueLevel={1}/>
         </Col>
         <Col span={12}>
-          <TitledValue title="Durchschnitt" value={stats.averagePoints} valueLevel={1}/>
+          <TitledValue title="Durchschnitt" value={roundTo(stats.averagePoints, 1)} valueLevel={1}/>
         </Col>
       </Row>
       <Row className="center">

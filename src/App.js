@@ -9,6 +9,7 @@ import CreateEventPage from "./views/AuthenticatedLayout/CreateEventPage/CreateE
 import {api} from "./shared/api";
 import {UserContext} from "./shared/context";
 import EventPage from "./views/AuthenticatedLayout/EventPage/EventPage";
+import StatsPage from "./views/AuthenticatedLayout/StatsPage/StatsPage";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function AuthenticatedArea() {
         <TitledRoute title="Home" path="/a/home" component={HomePage} />
         <TitledRoute title="Event erstellen" path="/a/create-event" component={CreateEventPage} />
         <Route path="/a/event/:eventId" component={EventPage} />
+        <TitledRoute title="Statistiken" path="/a/stats" component={StatsPage} />
 
         <Redirect to="/a/home"/>
       </Switch>

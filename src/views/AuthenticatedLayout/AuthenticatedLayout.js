@@ -29,7 +29,7 @@ function HeaderRow({title, back}) {
   const menu = (
     <Spin spinning={loading}>
       <Menu>
-        <Menu.Item key="0">Meine Statistik</Menu.Item>
+        <Menu.Item key="0" onClick={() => history.push("/a/stats")}>Meine Statistik</Menu.Item>
         <Menu.Item key="1" danger onClick={() => {
           api.delete("/users/session", {}, handle).then(() => history.push("../login"))
         }}>Abmelden</Menu.Item>
