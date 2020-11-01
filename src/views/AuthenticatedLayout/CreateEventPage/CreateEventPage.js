@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import cls from './CreateEventPage.module.less';
 import AuthenticatedLayout from "../AuthenticatedLayout";
-import {Space, Select, Button, Divider, Form, Tooltip, message} from "antd";
+import {Select, Button, Divider, Form, Tooltip, message} from "antd";
 import {api} from "../../../shared/api";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMapMarkerAlt, faPlus} from "@fortawesome/free-solid-svg-icons";

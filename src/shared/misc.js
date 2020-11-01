@@ -1,5 +1,3 @@
-import React from "react";
-
 export const defaultRules = {
   required: {required: true, message: "Dieses Feld wird benötigt"},
   requiredNoWhitespace: {required: true, whitespace: true, message: "Dieses Feld wird benötigt"}
@@ -33,4 +31,12 @@ export function mapKeysToArray(object, prefix) {
   }
 
   object[prefix] = result;
+}
+
+export function lastFromArray(array, fallback = null) {
+  return array.length === 0 ? fallback : array[array.length - 1];
+}
+
+export function setWindowTitle(title) {
+  document.title = `${title} | Archery`;
 }

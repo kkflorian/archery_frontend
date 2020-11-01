@@ -34,10 +34,11 @@ export default () => {
 }
 
 function EventListItem({item}) {
+  const history = useHistory();
   const getUserAvatar = (info, index) => (<UserAvatar key={index} username={info[0]} fullName={`${info[1]} ${info[2]}`} />);
   // TODO Open event on click
   return (
-    <List.Item className={cls.item}>
+    <List.Item className={cls.item} onClick={() => history.push(`./event/${item["eventId"]}`)}>
       {item["timestampEnd"] == null ? (<IngameItemMeta item={item} />) : (<FinishedItemMeta item={item}/>)}
       <Avatar.Group maxCount={2} maxPopoverPlacement="bottom">
         {getUserAvatar(item["creator"], 0)}

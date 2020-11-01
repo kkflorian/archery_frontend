@@ -1,4 +1,6 @@
+import React from "react";
 import {ApiClient} from "react-api-client";
+import {Spin} from "antd";
 
 export const api = new ApiClient({
   baseUrl: process.env.API_URL ?? "https://archery.abolish.property",
@@ -22,6 +24,7 @@ export const api = new ApiClient({
       errorMessage: `${error.name}: ${error.message}`
     }
   },
+  loaderCreateLoading: () => (<Spin />),
   fetchOptions: {
     credentials: (process.env.NODE_ENV === "development" ? 'include' : undefined)
   }
