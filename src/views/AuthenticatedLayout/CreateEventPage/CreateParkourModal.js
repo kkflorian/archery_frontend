@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Form, Input, InputNumber, Modal, Select} from "antd";
+import {Modal, Form, Input, InputNumber, Select} from "antd";
 import {defaultRules, getSelectTextSearch} from "../../../shared/misc";
 import countries from '../../../shared/countries';
 import cls from './CreateParkourModal.module.less'
@@ -10,18 +10,31 @@ export default function({reloadParkours, state: [visible, setVisible]}) {
   const [errorMessage, setErrorMessage] = useState(null);
   const [form] = Form.useForm();
 
-  async function handleOkay() {
+  function askIgnoreCoords(onNo) {
+    Modal.confirm({
+      title: 'Es konnten keine Koordinaten zu dieser Addresse gefunden werden. Trotzdem fortfahren?',
+      okText: "Fortfahren",
+      onOk: () => handleOkay(true),
+      cancelText: "Abbrechen",
+      onCancel: onNo
+    })
+  }
+
+  function handleOkay(ignoreCoordinates) {
     setErrorMessage("");
     form.validateFields()
-      .then(fields => api.put("/parkours", fields))
+      .then(fields => api.put("/parkours", {ignoreCoordinates, ...fields}))
       .then(result => {
-        if (result.hasError) {
-          setErrorMessage(result.errorMessage);
-          return;
+        if (!result.hasError) {
+          setVisible(false);
+          reloadParkours();
         }
 
-        setVisible(false);
-        reloadParkours();
+        if (result.errorCode === "ADDRESS_NOT_FOUND") {
+          askIgnoreCoords(() => setErrorMessage(result.errorMessage));
+        } else {
+          setErrorMessage(result.errorMessage);
+        }
       }).catch()
   }
 
@@ -32,7 +45,7 @@ export default function({reloadParkours, state: [visible, setVisible]}) {
 
   return (
     <Modal title="Parkour hinzufügen"
-           okText="Parkour erstellen" okButtonProps={{size: "large"}} onOk={handleOkay}
+           okText="Parkour erstellen" okButtonProps={{size: "large"}} onOk={() => handleOkay(false)}
            cancelText="Abbrechen" cancelButtonProps={{size: "large"}}
            afterClose={destroy} onCancel={() => setVisible(false)}
            visible={visible} closable={false} destroyOnClose>
