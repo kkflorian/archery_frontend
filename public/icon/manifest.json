@@ -1,7 +1,7 @@
 {
   "short_name": "Archery",
   "name": "Archery",
-  "description": "An app to track points when playing archery with your friend",
+  "description": "An app to add parkours and track points when playing archery",
   "icons": [
     {
       "src": "/icon/android-chrome-192x192.png",
