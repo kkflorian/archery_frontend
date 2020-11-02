@@ -36,11 +36,17 @@ export default () => {
 function EventListItem({item}) {
   const history = useHistory();
   const getUserAvatar = (info, index) => (<UserAvatar key={index} username={info[0]} fullName={`${info[1]} ${info[2]}`} />);
-  // TODO Open event on click
+
+  function onClick(ev) {
+    if (ev.target.closest(".ignore-click") != null || ev.target.closest(".ant-popover") != null) return;
+
+    history.push(`./event/${item["eventId"]}`)
+  }
+
   return (
-    <List.Item className={cls.item} onClick={() => history.push(`./event/${item["eventId"]}`)}>
+    <List.Item className={cls.item} onClick={onClick}>
       {item["timestampEnd"] == null ? (<IngameItemMeta item={item} />) : (<FinishedItemMeta item={item}/>)}
-      <Avatar.Group maxCount={2} maxPopoverPlacement="bottom">
+      <Avatar.Group maxCount={2} maxPopoverPlacement="bottom" className="ignore-click">
         {getUserAvatar(item["creator"], 0)}
         {item["member"].map((memberInfo, index) => getUserAvatar(memberInfo, index + 1))}
       </Avatar.Group>
