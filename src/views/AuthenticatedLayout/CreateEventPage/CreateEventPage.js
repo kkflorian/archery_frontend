@@ -136,7 +136,7 @@ function ParkourSelect({form}) {
         return;
       }
 
-      form.setFieldsValue({"parkour": distances[0].entry.value});
+      form.setFieldsValue({"parkourId": distances[0].entry.value});
     }).catch(e => {
       message.error("Position konnte nicht ermittelt werden")
       console.error(e);

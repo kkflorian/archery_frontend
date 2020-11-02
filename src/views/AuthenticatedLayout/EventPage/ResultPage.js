@@ -7,43 +7,32 @@ import TitledValue from "../shared/TitledValue/TitledValue";
 import {possessive, setWindowTitle} from "../../../shared/misc";
 import roundTo from 'round-to';
 import BlankSpace from "../../../shared/BlankSpace";
+import {api} from "../../../shared/api";
 
 export default function ({event, setTitle}) {
-  const {result: {data: {username}}} = useContext(UserContext);
-  const statsList = [ // todo remove test data
-    {
-      username: "user1",
-      firstName: "Vorname",
-      lastName: "Nachname",
-      averagePoints: 18.5,
-      totalPoints: 320,
-      shotsTotal: 25,
-      accuracy: 0.90
-    },
-    {
-      username: "user2",
-      firstName: "Vorname2s",
-      lastName: "Nachname2",
-      totalPoints: 200,
-      averagePoints: 17.5,
-      shotsTotal: 30,
-      accuracy: 0.80
-    }
-  ];
-
   useEffect(() => {
     setTitle("Eventübersicht");
-    setWindowTitle("PARKOURNAME - Ergebnis")
+    setWindowTitle(`${event["parkour"]["parkourName"]} - Ergebnis`)
   })
+
+  return (
+    <api.Loader consumer={true} endpoint={`/events/${event.eventId}/stats`}>
+      {({data}) => (<ResultPageContent statsList={data["stats"]} event={event}/>)}
+    </api.Loader>
+  )
+}
+
+function ResultPageContent({statsList, event}) {
+  const {result: {data: {username}}} = useContext(UserContext);
 
   return (
     <>
       <Row className="center">
         <Col span={12}>
-          <TitledValue title="Wertung" value={"GAMEMODE"} valueLevel={4}/>
+          <TitledValue title="Wertung" value={event["gameMode"]["gameMode"]} valueLevel={4}/>
         </Col>
         <Col span={12}>
-          <TitledValue title="Parkour" value={"PARKOURNAME"} valueLevel={4}/>
+          <TitledValue title="Parkour" value={event["parkour"]["parkourName"]} valueLevel={4}/>
         </Col>
       </Row>
       <Divider plain/>
@@ -55,7 +44,7 @@ export default function ({event, setTitle}) {
         <Col span={22}>
           <Typography.Title level={4} className={"center"}>Scoreboard</Typography.Title>
           <BlankSpace height={16}/>
-          <Scoreboard statsList={statsList} ownUsername={username} />
+          <Scoreboard statsList={statsList} ownUsername={username}/>
         </Col>
       </Row>
 
@@ -71,10 +60,10 @@ function Scoreboard({statsList, ownUsername}) {
     {title: "Name", dataIndex: 'fullName'},
     {title: "Punkte", dataIndex: 'points'}
   ];
-  const scoreboardData = statsList.sort((a, b) => b.totalPoints - a.totalPoints).map((stats, index) => ({
+  const scoreboardData = statsList.sort((a, b) => b["totalPoints"] - a["totalPoints"]).map((stats, index) => ({
     position: "#" + (index + 1),
     fullName: stats.firstName + " " + stats.lastName,
-    points: stats.totalPoints,
+    points: stats["totalPoints"],
     stats
   }));
 
@@ -103,18 +92,18 @@ function StatsDisplay({title, stats}) {
       <Typography.Title className={"center"} level={4}>{title}</Typography.Title>
       <Row className="center">
         <Col span={12}>
-          <TitledValue title="Gesamtpunkte" value={stats.totalPoints} valueLevel={1}/>
+          <TitledValue title="Gesamtpunkte" value={stats["totalPoints"]} valueLevel={1}/>
         </Col>
         <Col span={12}>
-          <TitledValue title="Durchschnitt" value={roundTo(stats.averagePoints, 1)} valueLevel={1}/>
+          <TitledValue title="Durchschnitt" value={roundTo(stats["averagePoints"], 1)} valueLevel={1}/>
         </Col>
       </Row>
       <Row className="center">
         <Col span={12}>
-          <TitledValue title="Genauigkeit" value={`${Math.round(stats.accuracy * 100)}%`} valueLevel={1}/>
+          <TitledValue title="Genauigkeit" value={`${Math.round(stats["accuracy"] * 100)}%`} valueLevel={1}/>
         </Col>
         <Col span={12}>
-          <TitledValue title="Schüsse" value={stats.shotsTotal} valueLevel={1}/>
+          <TitledValue title="Schüsse" value={stats["shotsTotal"]} valueLevel={1}/>
         </Col>
       </Row>
     </>

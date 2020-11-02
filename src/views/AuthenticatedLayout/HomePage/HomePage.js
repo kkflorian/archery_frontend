@@ -47,8 +47,7 @@ function EventListItem({item}) {
     <List.Item className={cls.item} onClick={onClick}>
       {item["timestampEnd"] == null ? (<IngameItemMeta item={item} />) : (<FinishedItemMeta item={item}/>)}
       <Avatar.Group maxCount={2} maxPopoverPlacement="bottom" className="ignore-click">
-        {getUserAvatar(item["creator"], 0)}
-        {item["member"].map((memberInfo, index) => getUserAvatar(memberInfo, index + 1))}
+        {item["member"].map((memberInfo, index) => getUserAvatar(memberInfo, index))}
       </Avatar.Group>
     </List.Item>
   )

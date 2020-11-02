@@ -22,19 +22,6 @@ export default function () {
     api.get(`/stats/${value}/graph`, graphHandle).finally();
   }
 
-  if (numbersResult != null) { // TODO remove test data
-    numbersResult.data = {
-      totalHits: 521,
-      totalShots: 942,
-      totalEvents: 17,
-      averageOverall: 17.2,
-    };
-  }
-
-  if (graphResult != null) {
-    graphResult.data.graphEntries = [1,2,3,4,5];
-  }
-
   const graphEntries = graphResult?.data.graphEntries;
   return (
     <AuthenticatedLayout back="/a/home" title="Meine Statistik" contentClass={cls.content}>
@@ -143,7 +130,7 @@ function NumbersDisplay({numbers}) {
           <TitledValue title="Gespiele Events" value={numbers["totalEvents"]} valueLevel={5}/>
         </Col>
         <Col span={12}>
-          <TitledValue title="Durchschnittspunkte" value={numbers["averageOverall"]} valueLevel={5}/>
+          <TitledValue title="Durchschnittspunkte" value={roundTo(numbers["averageOverall"], 1)} valueLevel={5}/>
         </Col>
       </Row>
     </div>

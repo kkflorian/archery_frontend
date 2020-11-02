@@ -8,20 +8,19 @@ import useArrayState from "use-array-state";
 import TitledValue from "../shared/TitledValue/TitledValue";
 
 export default function ({setTitle, event, reload}) {
-  const GamemodeComponent = gamemodeComponents[String(event["gameModeId"])];
+  const GamemodeComponent = gamemodeComponents[String(event["gameMode"]["id"])];
   const currentShooter = event.members.reduce((previous, current) => { // Find first user with least shots
     return (previous == null || current["shots"].length < previous["shots"].length) ? current : previous;
   });
   const currentAnimal = lastFromArray(currentShooter["shots"], {animalNumber: 0})["animalNumber"] + 1;
+  const parkour = event["parkour"];
 
   const {result: putResult, loading: putLoading, handle: putHandle} = api.useRequestState();
 
-  // todo add parkourname
-  // todo add animal count
   useEffect(() => {
-    setTitle(`PARKOURNAME (${currentAnimal}/TOTAL)`);
-    setWindowTitle("PARKOURNAME - Ingame")
-  }, [currentAnimal, setTitle])
+    setTitle(`${parkour["parkourName"]} (${currentAnimal}/${parkour["countAnimals"]})`);
+    setWindowTitle(`${parkour["parkourName"]} - Ingame`)
+  }, [currentAnimal, setTitle, parkour])
 
   async function onContinue(shots, resetShots) {
     const result = await api.put("/events/" + event["eventId"] + "/shots", {
