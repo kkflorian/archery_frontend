@@ -6,6 +6,7 @@ import {defaultRules} from "../../../shared/misc";
 import {useHistory} from "react-router-dom";
 import {api} from "../../../shared/api";
 import {FormError} from "../../../shared/FormError/FormError";
+import BlankSpace from "../../../shared/BlankSpace";
 
 export default () => {
   return LoginLayout.wrap(
@@ -59,7 +60,7 @@ const RegisterForm = () => {
         </Form.Item>
 
         <Form.Item
-          className={cls.formItem}
+          className={`${cls.formItem} ${cls.lastFormItem}`}
           name="password"
           label="Passwort"
           rules={[defaultRules.requiredNoWhitespace]}>
