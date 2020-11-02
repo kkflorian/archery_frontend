@@ -3,7 +3,7 @@ import {ApiClient} from "react-api-client";
 import {Spin} from "antd";
 
 export const api = new ApiClient({
-  baseUrl: process.env.API_URL ?? "https://archery.abolish.property",
+  baseUrl: process.env.API_URL ?? "/api/v1",
   responseHandler: ({status, errorCode, message}) => {
     if (status === "error") {
       return {
