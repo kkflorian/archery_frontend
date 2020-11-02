@@ -1,0 +1,22 @@
+{
+  "short_name": "Archery",
+  "name": "Archery",
+  "description": "An app to track points when playing archery with your friend",
+  "icons": [
+    {
+      "src": "/icon/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/images/android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#ff4d4f",
+  "background_color": "#141414"
+
+}
