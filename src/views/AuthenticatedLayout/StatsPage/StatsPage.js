@@ -69,7 +69,7 @@ function StatsGraph({rawData}) {
       lineWidth={4}
       margin={{ top: 5, right: 15, bottom: 40, left: 40 }}
 
-      xScale={{ type: 'linear', min: 'auto', max: 'auto' }}
+      xScale={{ type: 'linear', min: 'auto', max: 'auto', tickValues: [0,1] }}
       yScale={{ type: 'linear', min: 0, max: 20 }}
       yFormat={value => roundTo(value, 1)}
       sliceTooltip={({slice}) => {
@@ -88,7 +88,8 @@ function StatsGraph({rawData}) {
         tickPadding: 5,
         legend: 'Event',
         legendOffset: 35,
-        legendPosition: 'middle'
+        legendPosition: 'middle',
+        format: e => Math.floor(e) === e && e
       }}
       axisLeft={{
         orient: 'left',
