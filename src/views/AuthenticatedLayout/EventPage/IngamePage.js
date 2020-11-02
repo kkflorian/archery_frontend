@@ -1,6 +1,6 @@
 import cls from './IngamePage.module.less';
 import {lastFromArray, setWindowTitle} from "../../../shared/misc";
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {api} from "../../../shared/api";
 import {Avatar, Button, Col, Divider, Radio, Row} from "antd";
 import {FormError} from "../../../shared/FormError/FormError";
