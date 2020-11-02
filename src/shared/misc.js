@@ -44,3 +44,18 @@ export function setWindowTitle(title) {
 export function possessive(name) {
   return `${name}${name.endsWith("s") ? "'" : "'s"}`;
 }
+
+export function countCharTypes(str) {
+  const counts = [0, 0, 0, 0];
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charAt(i);
+
+    if (char >= "0" && char <= "9") counts[0]++;
+    else if (char >= "A" && char <= "Z") counts[1]++;
+    else if (char >= "a" && char <= "z") counts[2]++;
+    else counts[3]++;
+  }
+
+  return counts.filter(elem => elem > 0).length;
+}

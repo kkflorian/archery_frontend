@@ -2,7 +2,7 @@ import LoginLayout from "../LoginLayout";
 import {Button, Col, Form, Input, Row, Spin, Typography} from "antd";
 import cls from "./RegisterPage.module.less";
 import React from "react";
-import {defaultRules} from "../../../shared/misc";
+import {countCharTypes, defaultRules} from "../../../shared/misc";
 import {useHistory} from "react-router-dom";
 import {api} from "../../../shared/api";
 import {FormError} from "../../../shared/FormError/FormError";
@@ -38,7 +38,12 @@ const RegisterForm = () => {
           className={cls.formItem}
           name="username"
           label="Nutzername"
-          rules={[defaultRules.requiredNoWhitespace]}>
+          validateFirst
+          rules={[
+            defaultRules.requiredNoWhitespace,
+            {min: 3, max: 20, message: "Der Nutzername muss zwischen 3 und 20 Zeichen lang sein"},
+            {pattern: "^[A-Za-z0-9_]{3,20}$", message: "Der Nutzername darf nur aus Buchstaben, Zahlen und Unterstrichen bestehen"}
+          ]}>
           <Input placeholder="Nutzername" size="large" autoComplete="username"/>
         </Form.Item>
 
@@ -62,7 +67,21 @@ const RegisterForm = () => {
           className={`${cls.formItem} ${cls.lastFormItem}`}
           name="password"
           label="Passwort"
-          rules={[defaultRules.requiredNoWhitespace]}>
+          validateFirst
+          rules={[
+            defaultRules.requiredNoWhitespace,
+            {required: true, min: 8, message: "Das Passwort muss min. acht Zeichen lang sein"},
+            {
+              required: true,
+              validator: (rule, value) => {
+                if (countCharTypes(value) < 2) {
+                  return Promise.reject("Das Passwort muss min. zwei Zeichentypen enthalten");
+                }
+
+                return Promise.resolve();
+              },
+            }
+          ]}>
           <Input.Password placeholder="Passwort" size="large" autoComplete="new-password"/>
         </Form.Item>
 
