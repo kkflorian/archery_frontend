@@ -100,7 +100,7 @@ function StatsDisplay({title, stats}) {
       </Row>
       <Row className="center">
         <Col span={12}>
-          <TitledValue title="Genauigkeit" value={`${Math.round(stats["accuracy"] * 100)}%`} valueLevel={1}/>
+          <TitledValue title="Trefferquote" value={`${Math.round(stats["accuracy"] * 100)}%`} valueLevel={1}/>
         </Col>
         <Col span={12}>
           <TitledValue title="Schüsse" value={stats["totalShots"]} valueLevel={1}/>
