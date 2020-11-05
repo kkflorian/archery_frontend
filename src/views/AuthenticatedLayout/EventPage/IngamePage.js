@@ -78,7 +78,7 @@ function TwoArrowGamemode({onContinue, loading}) {
     <>
       {groups}
 
-      {(shotValues.length === 2) && (
+      {(shotValues.length === 2 && !shotValues.some(value => value === 0)) && (
         <ContinueButton onClick={() => {
           onContinue(shotValues, () => $shotValues.set([]));
         }} loading={loading}/>
