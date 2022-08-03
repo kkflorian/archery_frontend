@@ -1,4 +1,4 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A stylish frontend for our archery school project
 
 ## Available Scripts
 
